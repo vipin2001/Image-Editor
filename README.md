@@ -1,5 +1,5 @@
 
-# Image Editor
+# Image Editor | Course Project - EE610
 
 The Image editor is Intesnsity transformation GUI toolbox which allows one to perform mutiple Intesnsity transformation.<br />
 The features included in the tool are Histogram Equalization, Gamma correction, log transform, blur image, shapen image and color invert.<br />
