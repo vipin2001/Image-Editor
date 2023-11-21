@@ -128,6 +128,57 @@ def histeqImage():
 	imglist.append(rgbImage)
 	currimage = ImageTk.PhotoImage(Image.fromarray(rgbImage))
 	showimage()
+#Histogram Matching
+def histMatching(intensity_specified):
+    global imglist
+    global currimage
+    global currimagematrix
+    
+    # Converting RGB to HSV
+    hsvImage = cv2.cvtColor(currimagematrix, cv2.COLOR_BGR2HSV)
+    
+    # Extract the intensity channel (Value component in HSV)
+    intensity_channel = hsvImage[:,:,2]
+
+    # Calculate the histogram of the intensity channel
+    hist, bins = np.histogram(intensity_channel.flatten(), bins=256, range=[0, 256])
+
+    # Normalize the histogram
+    hist_normalized = hist / (intensity_channel.shape[0] * intensity_channel.shape[1])
+
+    # Calculate the cumulative distribution function (CDF)
+    cdf = np.cumsum(hist_normalized)
+
+    # Map pixel values based on the CDF for histogram equalization
+    intensity_equalized = np.interp(intensity_channel.flatten(), bins[:-1], cdf * 255)
+    intensity_equalized = np.reshape(intensity_equalized, intensity_channel.shape).astype(np.uint8)
+
+    # Apply histogram equalization to the Value channel
+    hsvImage[:,:,2] = intensity_equalized
+
+    # Perform histogram specification (replace target_cdf with the desired target CDF)
+    target_cdf = np.array([i for i in range(256)])  # Replace this with your target CDF
+    intensity_specified = np.interp(intensity_channel.flatten(), cdf * 255, target_cdf)
+    intensity_specified = np.reshape(intensity_specified, intensity_channel.shape).astype(np.uint8)
+
+    # Apply histogram specification to the Value channel
+    hsvImage[:,:,2] = intensity_specified
+
+    # Convert the result back to BGR
+    rgbImage = cv2.cvtColor(hsvImage, cv2.COLOR_HSV2BGR)
+    
+    # Update the current image matrix
+    currimagematrix = rgbImage
+    
+    # Append the image to the list
+    imglist.append(rgbImage)
+    
+    # Convert the image to PhotoImage for display
+    currimage = ImageTk.PhotoImage(Image.fromarray(rgbImage))
+    
+    # Show the image
+    showimage()
+
 
 #Apply Gamma correction to the Image
 def gcorrectImage():
