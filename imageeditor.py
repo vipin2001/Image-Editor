@@ -129,7 +129,7 @@ def histeqImage():
 	currimage = ImageTk.PhotoImage(Image.fromarray(rgbImage))
 	showimage()
 #Histogram Matching
-def histMatching(intensity_specified):
+def histMatching(target_cdf):
     global imglist
     global currimage
     global currimagematrix
@@ -156,8 +156,7 @@ def histMatching(intensity_specified):
     # Apply histogram equalization to the Value channel
     hsvImage[:,:,2] = intensity_equalized
 
-    # Perform histogram specification (replace target_cdf with the desired target CDF)
-    target_cdf = np.array([i for i in range(256)])  # Replace this with your target CDF
+    # Perform histogram specification 
     intensity_specified = np.interp(intensity_channel.flatten(), cdf * 255, target_cdf)
     intensity_specified = np.reshape(intensity_specified, intensity_channel.shape).astype(np.uint8)
 
